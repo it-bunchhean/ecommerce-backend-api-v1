@@ -1,10 +1,18 @@
 package com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,14 +21,18 @@ public class UserJpaEntity {
 
     @Id
     private UUID id;
-
     private String email;
-
     private String passwordHash;
-    
     private String status;
-
     private Instant createdAt;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id") 
+    )
+    private Set<RoleJpaEntity> roles = new HashSet<>();
 
     // required by Jpa spec
     protected UserJpaEntity() {}
@@ -34,16 +46,28 @@ public class UserJpaEntity {
         entity.passwordHash = user.getPasswordHash();
         entity.status = user.getStatus().name();
         entity.createdAt = user.getCreatedAt();
+
+        entity.roles = user.getRoles().stream()
+            .map(RoleJpaEntity::fromDomain)
+            .collect(Collectors.toSet());
+
         return entity;
     }
 
+
     public com.it_chhean.ecommerce.identity.domain.model.User toDomain() {
+        // To convert jpa enities back tojeka pure core model 
+        Set domainRoles = this.roles.stream()
+                .map(RoleJpaEntity::toDomain)
+                .collect(Collectors.toSet());
+
         return com.it_chhean.ecommerce.identity.domain.model.User.reconstitute(
                 new com.it_chhean.ecommerce.identity.domain.model.UserId(this.id),
                 this.email, 
                 this.passwordHash,
                 com.it_chhean.ecommerce.identity.domain.model.UserStatus.valueOf(this.status),
-                this.createdAt
+                this.createdAt,
+                domainRoles
         );
     }
 

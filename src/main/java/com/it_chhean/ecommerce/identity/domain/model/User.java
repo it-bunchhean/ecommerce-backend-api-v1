@@ -1,20 +1,38 @@
 package com.it_chhean.ecommerce.identity.domain.model;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import lombok.AccessLevel;
 import lombok.Getter;
 
-import java.time.Instant;
-import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 public class User {
 
-    // Getter
     private final UserId id;
     private String email;
     private final String passwordHash;  
     private UserStatus status;
     private final Instant createdAt;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    @Getter(AccessLevel.NONE) // block direct external mutation of the set
+    private Set<Role> roles = new HashSet<>();
 
     private User(UserId id, String email, String passwordHash, UserStatus status, Instant createdAt) {
         this.id = Objects.requireNonNull(id);
@@ -36,9 +54,40 @@ public class User {
     } 
 
     // Domain factory method use by data mapper when rebuilding state from db. 
-    public static User reconstitute(UserId id, String email, String passwordHash, UserStatus status, Instant createdAt) {
-        return new User(id, email, passwordHash, status, createdAt);
+    public static User reconstitute(UserId id, String email, String passwordHash, UserStatus status, Instant createdAt, Set<Role> roles) {
+        User user = new User(id, email, passwordHash, status, createdAt);
+
+        if (roles != null) {
+            user.roles.addAll(roles);
+        }
+
+        return user; 
     }
+
+    /**
+     * Role Domain logic
+     */
+
+    // Safe read only access to roles
+    public Set<Role> getRoles() {
+        return Collections.unmodifiableSet(roles);
+    }
+
+    // Adding a role
+    public void assignRole(Role role) {
+        Objects.requireNonNull(role, "Role connot be null");
+        this.roles.add(role);
+    }
+
+    // Remove a role 
+    public void removeRole(Role role) {
+        Objects.requireNonNull(role, "Role cannot be null");
+        this.roles.remove(role);
+    }
+
+    /**
+     * Existing state logic
+     */
 
     // logic roles
     public void verifyEmail() {
