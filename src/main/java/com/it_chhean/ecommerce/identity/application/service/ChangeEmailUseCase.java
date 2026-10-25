@@ -5,22 +5,20 @@ import com.it_chhean.ecommerce.identity.domain.model.User;
 import com.it_chhean.ecommerce.identity.domain.model.UserId;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
 
-public class UserApplicatioinService {
-    
+public class ChangeEmailUseCase {
+
     private final UserRepository userRepository;
 
-    public UserApplicatioinService(UserRepository userRepository) {
+    public ChangeEmailUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+    
+    public void execute(UserId id, String newEmail) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("User not found with id:" + id));
 
-    // Core business use case orchestrator
-    public void suspendUser(java.util.UUID rawId) {
-        UserId userId = new UserId(rawId);
+        user.changeEmail(newEmail);
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        user.suspend();
         userRepository.save(user);
     }
 

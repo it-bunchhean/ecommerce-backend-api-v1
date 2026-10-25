@@ -7,92 +7,60 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import lombok.AccessLevel;
-import lombok.Getter;
-
-
-@Getter
 public class User {
 
     private final UserId id;
     private String email;
     private final String passwordHash;  
+    private final UserProfile profile; 
     private UserStatus status;
     private final Instant createdAt;
+    private final Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    @Getter(AccessLevel.NONE) // block direct external mutation of the set
-    private Set<Role> roles = new HashSet<>();
-
-    private User(UserId id, String email, String passwordHash, UserStatus status, Instant createdAt) {
-        this.id = Objects.requireNonNull(id);
+    // Private constructor enforcing domain integrity rules
+    private User(UserId id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+        this.id = Objects.requireNonNull(id, "User ID cannot be null");
         this.setEmail(email);
-        this.passwordHash = Objects.requireNonNull(passwordHash);
-        this.status = Objects.requireNonNull(status);
-        this.createdAt = Objects.requireNonNull(createdAt);
+        this.passwordHash = Objects.requireNonNull(passwordHash, "Password hash cannot be null");
+        this.profile = profile; // Profile can be null at initial stage if required
+        this.status = Objects.requireNonNull(status, "User status cannot be null");
+        this.createdAt = Objects.requireNonNull(createdAt, "Creation timestamp cannot be null");
+        this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
     } 
 
-    // Domain factory method for initial sign-up state
-    public static User register(String email, String passwordHash) {
-           return new User(
-                   new UserId(UUID.randomUUID()),
-                   email,
-                   passwordHash, 
-                   UserStatus.PENDING_VERIFICATION,
-                   Instant.now()
-           );
+    /**
+     * Domain Factory Methods
+     */
+
+    // Factory method for creating a brand new registration sign-up state
+    public static User register(String email, String passwordHash, UserProfile profile) {
+        return new User(
+                new UserId(UUID.randomUUID()),
+                email,
+                passwordHash, 
+                profile,
+                UserStatus.PENDING_VERIFICATION,
+                Instant.now(),
+                new HashSet<>()
+        );
     } 
 
-    // Domain factory method use by data mapper when rebuilding state from db. 
-    public static User reconstitute(UserId id, String email, String passwordHash, UserStatus status, Instant createdAt, Set<Role> roles) {
-        User user = new User(id, email, passwordHash, status, createdAt);
-
-        if (roles != null) {
-            user.roles.addAll(roles);
-        }
-
-        return user; 
+    // Factory method used strictly by data mappers when rebuilding state from the database
+    public static User reconstitute(UserId id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+        return new User(id, email, passwordHash, profile, status, createdAt, roles);
     }
 
     /**
-     * Role Domain logic
+     * Core Domain Logic 
      */
 
-    // Safe read only access to roles
-    public Set<Role> getRoles() {
-        return Collections.unmodifiableSet(roles);
+    public boolean canChangePassword() {
+        return this.passwordHash != null && !this.passwordHash.isEmpty(); 
     }
 
-    // Adding a role
-    public void assignRole(Role role) {
-        Objects.requireNonNull(role, "Role connot be null");
-        this.roles.add(role);
-    }
-
-    // Remove a role 
-    public void removeRole(Role role) {
-        Objects.requireNonNull(role, "Role cannot be null");
-        this.roles.remove(role);
-    }
-
-    /**
-     * Existing state logic
-     */
-
-    // logic roles
     public void verifyEmail() {
         if (this.status != UserStatus.PENDING_VERIFICATION) {
-            throw new IllegalStateException("Cannot verify user from state:" + this.status);
+            throw new IllegalStateException("Cannot verify user from state: " + this.status);
         }
         this.status = UserStatus.ACTIVE;
     }
@@ -104,17 +72,50 @@ public class User {
         this.status = UserStatus.SUSPENDED;
     }
 
-    public void chnageEmail(String newEmail) {
+    public void changeEmail(String newEmail) {
         this.setEmail(newEmail);
     }
 
     private void setEmail(String email) {
-        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new IllegalArgumentException("Invalid email address format");
         }
         this.email = email;
     }
 
+    /**
+     * Role Association Logic
+     */
+
+    // Safe, read-only collection exposure to preserve internal encapsulation
+    public Set<Role> getRoles() {
+        return Collections.unmodifiableSet(roles);
+    }
+
+    public void assignRole(Role role) {
+        Objects.requireNonNull(role, "Role cannot be null");
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        Objects.requireNonNull(role, "Role cannot be null");
+        this.roles.remove(role);
+    }
+
+    /**
+     * Getters 
+     */
+
+    public UserId getId() { return id; }
+    public String getEmail() { return email; }
+    public String getPasswordHash() { return passwordHash; }
+    public UserProfile getProfile() { return profile; }
+    public UserStatus getStatus() { return status; }
+    public Instant getCreatedAt() { return createdAt; }
+
+    /**
+     * Identity Equality Protocols
+     */
 
     @Override
     public boolean equals(Object o) {

@@ -6,13 +6,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,8 +25,17 @@ public class UserJpaEntity {
 
     @Id
     private UUID id;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String passwordHash;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private UserProfile profile;
+
     private String status;
     private Instant createdAt;
 
@@ -44,6 +57,7 @@ public class UserJpaEntity {
         entity.id = user.getId().value();
         entity.email = user.getEmail();
         entity.passwordHash = user.getPasswordHash();
+        entity.profile = user.getProfile();
         entity.status = user.getStatus().name();
         entity.createdAt = user.getCreatedAt();
 
@@ -60,6 +74,9 @@ public class UserJpaEntity {
         Set domainRoles = this.roles.stream()
                 .map(RoleJpaEntity::toDomain)
                 .collect(Collectors.toSet());
+
+        com.it_chhean.ecommerce.identity.domain.model.UserProfile domainProfile = 
+            this.profile != null ? this.profile.toDomain() : null;
 
         return com.it_chhean.ecommerce.identity.domain.model.User.reconstitute(
                 new com.it_chhean.ecommerce.identity.domain.model.UserId(this.id),
