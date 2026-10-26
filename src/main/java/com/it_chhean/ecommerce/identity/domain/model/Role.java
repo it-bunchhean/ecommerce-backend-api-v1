@@ -20,7 +20,7 @@ public class Role {
 
     // Factory method for provisioning a brand-new role
     public static Role create(String name) {
-        return new Role(new RoleId(UUID.randomUUID()), name);
+        return new Role(new RoleId( , name);
     }
 
     // Factory method used strictly by data mappers when rebuilding state from the

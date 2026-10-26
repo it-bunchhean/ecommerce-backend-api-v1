@@ -53,7 +53,6 @@ public class User {
     /**
      * Core Domain Logic 
      */
-
     public boolean canChangePassword() {
         return this.passwordHash != null && !this.passwordHash.isEmpty(); 
     }
@@ -86,7 +85,6 @@ public class User {
     /**
      * Role Association Logic
      */
-
     // Safe, read-only collection exposure to preserve internal encapsulation
     public Set<Role> getRoles() {
         return Collections.unmodifiableSet(roles);
@@ -103,9 +101,8 @@ public class User {
     }
 
     /**
-     * Getters 
+     * Getters
      */
-
     public UserId getId() { return id; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
@@ -116,7 +113,6 @@ public class User {
     /**
      * Identity Equality Protocols
      */
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

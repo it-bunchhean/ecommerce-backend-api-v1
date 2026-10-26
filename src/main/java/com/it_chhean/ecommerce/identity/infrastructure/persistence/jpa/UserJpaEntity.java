@@ -18,9 +18,13 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_users")
+@Getter
+@Setter
 public class UserJpaEntity {
 
     @Id
@@ -83,8 +87,8 @@ public class UserJpaEntity {
                 this.email, 
                 this.passwordHash,
                 com.it_chhean.ecommerce.identity.domain.model.UserStatus.valueOf(this.status),
-                this.createdAt,
-                domainRoles
+                domainProfile,
+                this.createdAt
         );
     }
 

@@ -1,3 +1,5 @@
+package com.it_chhean.ecommerce.identity.infrastructure.controller;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
