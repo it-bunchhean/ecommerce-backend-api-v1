@@ -8,10 +8,5 @@ import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEn
 @Component
 public class UserMapper {
 
-    public User toDomain(UesrJpaEntity jpa) {
-        if (jpa == null) return null; 
 
-        UserProfile domainProfile = null;
-        if (jpa.)
-    }
 }

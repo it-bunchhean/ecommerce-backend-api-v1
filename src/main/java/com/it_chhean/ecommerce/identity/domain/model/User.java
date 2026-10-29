@@ -5,11 +5,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 public class User {
 
-    private final UserId id;
+    private Long id;
     private String email;
     private final String passwordHash;  
     private final UserProfile profile; 
@@ -18,15 +17,15 @@ public class User {
     private final Set<Role> roles;
 
     // Private constructor enforcing domain integrity rules
-    private User(UserId id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
-        this.id = Objects.requireNonNull(id, "User ID cannot be null");
+    private User(Long id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+        this.id = id;
         this.setEmail(email);
         this.passwordHash = Objects.requireNonNull(passwordHash, "Password hash cannot be null");
         this.profile = profile; // Profile can be null at initial stage if required
         this.status = Objects.requireNonNull(status, "User status cannot be null");
         this.createdAt = Objects.requireNonNull(createdAt, "Creation timestamp cannot be null");
         this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
-    } 
+    }
 
     /**
      * Domain Factory Methods
@@ -35,9 +34,9 @@ public class User {
     // Factory method for creating a brand new registration sign-up state
     public static User register(String email, String passwordHash, UserProfile profile) {
         return new User(
-                new UserId(UUID.randomUUID()),
+                null,
                 email,
-                passwordHash, 
+                passwordHash,
                 profile,
                 UserStatus.PENDING_VERIFICATION,
                 Instant.now(),
@@ -46,7 +45,7 @@ public class User {
     } 
 
     // Factory method used strictly by data mappers when rebuilding state from the database
-    public static User reconstitute(UserId id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+    public static User reconstitute(Long id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
         return new User(id, email, passwordHash, profile, status, createdAt, roles);
     }
 
@@ -100,10 +99,7 @@ public class User {
         this.roles.remove(role);
     }
 
-    /**
-     * Getters
-     */
-    public UserId getId() { return id; }
+    public Long getId() { return id; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
     public UserProfile getProfile() { return profile; }
@@ -115,13 +111,20 @@ public class User {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return id.equals(user.id);
+        if (this == o) {
+            return true;
+        }
+
+        if ( !(o instanceof User user)) {
+            return false;
+        }
+
+        return id != null && id.equals(user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id); 
+        return getClass().hashCode();
     }
+
 }

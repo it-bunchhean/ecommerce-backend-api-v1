@@ -5,12 +5,12 @@ import java.util.UUID;
 
 public class Role {
 
-    private final RoleId id;
+    private final Integer id;
     private String name;
 
     // Private constructor enforcing core domain constraints
-    private Role(RoleId id, String name) {
-        this.id = Objects.requireNonNull(id, "Role ID cannot be null");
+    private Role(Integer id, String name) {
+        this.id = id;
         this.setName(name);
     }
 
@@ -20,12 +20,12 @@ public class Role {
 
     // Factory method for provisioning a brand-new role
     public static Role create(String name) {
-        return new Role(new RoleId( , name);
+        return new Role(null, name);
     }
 
-    // Factory method used strictly by data mappers when rebuilding state from the
-    // database
-    public static Role reconstitute(RoleId id, String name) {
+    // Factory method used strictly by data mappers when rebuilding state from db
+    public static Role reconstitute(Integer id, String name) {
+        Objects.requireNonNull(id, "Role ID cannot be null during reconstitute");
         return new Role(id, name);
     }
 
@@ -54,7 +54,7 @@ public class Role {
     /**
      * Getters
      */
-    public RoleId getId() { return id; }
+    public Integer getId() { return id; }
     public String getName() { return name; }
 
     /**
@@ -62,15 +62,19 @@ public class Role {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Role role))
+        }
+
+        if (!(o instanceof Role role)) {
             return false;
-        return id.equals(role.id);
+        }
+
+        return id != null && id.equals(role.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getClass().hashCode();
     }
 }

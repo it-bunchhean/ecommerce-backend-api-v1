@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.it_chhean.ecommerce.identity.domain.model.User;
-import com.it_chhean.ecommerce.identity.domain.model.UserId;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
 import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEntity;
 
@@ -29,6 +28,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(UserId id) {
+//        return springDataUserRepository.(id)
+//                .map(UserJpaEntity::toDomain);
         return null;
     }
 

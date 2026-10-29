@@ -1,18 +1,16 @@
 package com.it_chhean.ecommerce.identity.domain.model;
 
-import java.util.Objects;
-
 public class UserProfile {
 
-    private final UserId id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String avatarUrl;
 
     // Private constructor enforcing domain layer encapsulation
-    private UserProfile(UserId id, String firstName, String lastName, String phoneNumber, String avatarUrl) {
-        this.id = Objects.requireNonNull(id, "Profile ID cannot be null");
+    private UserProfile(Long id, String firstName, String lastName, String phoneNumber, String avatarUrl) {
+        this.id = id;
         this.updateName(firstName, lastName);
         this.updatePhoneNumber(phoneNumber);
         this.updateAvatar(avatarUrl);
@@ -21,9 +19,18 @@ public class UserProfile {
     /**
      * Domain Factory Methods
      */
+    public static UserProfile create(String firstName, String lastName, String phoneNumber) {
+        return  new UserProfile(
+                null,
+                firstName,
+                lastName,
+                phoneNumber,
+                null
+        );
+    }
 
     // Factory method used by data mappers when rebuilding state from database
-    public static UserProfile reconstitute(UserId id, String firstName, String lastName, String phoneNumber, String avatarUrl) {
+    public static UserProfile reconstitute(Long id, String firstName, String lastName, String phoneNumber, String avatarUrl) {
         return new UserProfile(id, firstName, lastName, phoneNumber, avatarUrl);
     }
 
@@ -69,7 +76,7 @@ public class UserProfile {
     /**
      * Getters 
      */
-    public UserId getId() { return id; }
+    public Long getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getPhoneNumber() { return phoneNumber; }
@@ -80,13 +87,19 @@ public class UserProfile {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserProfile profile)) return false;
-        return id.equals(profile.id);
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof UserProfile profile)) {
+            return false;
+        }
+
+        return id != null && id.equals(profile.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getClass().hashCode();
     }
 }

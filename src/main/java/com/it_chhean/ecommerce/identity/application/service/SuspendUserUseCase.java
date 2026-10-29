@@ -2,7 +2,6 @@ package com.it_chhean.ecommerce.identity.application.service;
 
 import com.it_chhean.ecommerce.common.exception.UserNotFoundException;
 import com.it_chhean.ecommerce.identity.domain.model.User;
-import com.it_chhean.ecommerce.identity.domain.model.UserId;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
 
 public class SuspendUserUseCase {

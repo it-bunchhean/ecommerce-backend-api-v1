@@ -1,4 +1,4 @@
-package com.it_chhean.ecommerce.identity.application.dto;
+package com.it_chhean.ecommerce.identity.application.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +15,9 @@ public record RegisterRequest(
 
         String firstName,
 
-        String lastName
+        String lastName,
+
+        String phoneNumber
 ) {
     public RegisterRequest {
         email = email != null ? email.trim() : null;

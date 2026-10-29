@@ -11,21 +11,21 @@ import lombok.Getter;
 public class RoleJpaEntity {
 
     @Id
-    private Long id;
+    private Integer id;
     private String name;
 
     protected RoleJpaEntity() {}
 
     public static RoleJpaEntity fromDomain(com.it_chhean.ecommerce.identity.domain.model.Role domainRole) {
         RoleJpaEntity entity = new RoleJpaEntity();
-        entity.id = domainRole.getId().value();
+        entity.id = domainRole.getId();
         entity.name = domainRole.getName();
         return entity;
     }
 
     public com.it_chhean.ecommerce.identity.domain.model.Role toDomain() {
         return com.it_chhean.ecommerce.identity.domain.model.Role.reconstitute(
-                new com.it_chhean.ecommerce.identity.domain.model.RoleId(this.id),
+                this.id,
                 this.name
         );
     }
