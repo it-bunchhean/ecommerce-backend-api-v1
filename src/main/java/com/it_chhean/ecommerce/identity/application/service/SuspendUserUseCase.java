@@ -13,10 +13,8 @@ public class SuspendUserUseCase {
     }
 
     // Core business use case orchestrator
-    public void suspendUser(java.util.UUID rawId) {
-        UserId userId = new UserId(rawId);
-
-        User user = userRepository.findById(userId)
+    public void suspendUser(Long id) {
+        User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.suspend();

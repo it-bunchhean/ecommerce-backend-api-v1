@@ -27,10 +27,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(UserId id) {
-//        return springDataUserRepository.(id)
-//                .map(UserJpaEntity::toDomain);
-        return null;
+    public Optional<User> findById(Long id) {
+        return springDataUserRepository.findById(id)
+                .map(UserJpaEntity::toDomain);
     }
 
     @Override

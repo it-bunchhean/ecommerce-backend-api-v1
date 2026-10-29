@@ -12,7 +12,7 @@ public class ChangeEmailUseCase {
         this.userRepository = userRepository;
     }
     
-    public void execute(UserId id, String newEmail) {
+    public void execute(Long id, String newEmail) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException("User not found with id:" + id));
 

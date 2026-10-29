@@ -11,9 +11,8 @@ import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEn
 /**
  * Standard spring data layer working behind the scence.
  */
-public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, UUID> {
+public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, Long> {
     Optional<UserJpaEntity> findByEmail(String email);
-
-    List<UserJpaEntity> id(UUID id);
+    List<UserJpaEntity> id(Long id);
 }
 
