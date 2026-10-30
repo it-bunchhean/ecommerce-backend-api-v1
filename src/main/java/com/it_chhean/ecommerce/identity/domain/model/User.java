@@ -9,6 +9,7 @@ import java.util.Set;
 public class User {
 
     private Long id;
+    private String username;
     private String email;
     private final String passwordHash;  
     private final UserProfile profile; 
@@ -17,8 +18,9 @@ public class User {
     private final Set<Role> roles;
 
     // Private constructor enforcing domain integrity rules
-    private User(Long id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+    private User(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
         this.id = id;
+        this.username = username;
         this.setEmail(email);
         this.passwordHash = Objects.requireNonNull(passwordHash, "Password hash cannot be null");
         this.profile = profile; // Profile can be null at initial stage if required
@@ -32,9 +34,10 @@ public class User {
      */
 
     // Factory method for creating a brand new registration sign-up state
-    public static User register(String email, String passwordHash, UserProfile profile) {
+    public static User register(String username, String email, String passwordHash, UserProfile profile) {
         return new User(
                 null,
+                username,
                 email,
                 passwordHash,
                 profile,
@@ -45,8 +48,8 @@ public class User {
     } 
 
     // Factory method used strictly by data mappers when rebuilding state from the database
-    public static User reconstitute(Long id, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
-        return new User(id, email, passwordHash, profile, status, createdAt, roles);
+    public static User reconstitute(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
+        return new User(id, username, email, passwordHash, profile, status, createdAt, roles);
     }
 
     /**
@@ -101,6 +104,7 @@ public class User {
 
     public Long getId() { return id; }
     public String getEmail() { return email; }
+    public String getUsername() { return username; }
     public String getPasswordHash() { return passwordHash; }
     public UserProfile getProfile() { return profile; }
     public UserStatus getStatus() { return status; }

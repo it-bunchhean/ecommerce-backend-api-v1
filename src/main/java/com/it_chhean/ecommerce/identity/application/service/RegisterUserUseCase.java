@@ -1,6 +1,7 @@
 package com.it_chhean.ecommerce.identity.application.service;
 
 import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
+import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 import com.it_chhean.ecommerce.identity.domain.model.User;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
@@ -15,7 +16,7 @@ public class RegisterUserUseCase {
 
     private final UserRepository userRepository;
 
-    public void execute(RegisterRequest request) {
+    public UserResponse execute(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalArgumentException("An account is already registerd with this email address.");
         }
@@ -28,11 +29,12 @@ public class RegisterUserUseCase {
 
         String hardCodeHash = request.passwordHash();
         User newUser = User.register(
+                request.username(),
                 request.email(),
                 hardCodeHash,
                 profile
         );
 
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 }

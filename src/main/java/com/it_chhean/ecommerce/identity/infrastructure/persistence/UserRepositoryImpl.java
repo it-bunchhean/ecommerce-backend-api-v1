@@ -2,6 +2,7 @@ package com.it_chhean.ecommerce.identity.infrastructure.persistence;
 
 import java.util.Optional;
 
+import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 import org.springframework.stereotype.Repository;
 
 import com.it_chhean.ecommerce.identity.domain.model.User;
@@ -21,9 +22,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void save(User user) {
+    public UserResponse save(User user) {
         UserJpaEntity entity = UserJpaEntity.fromDomain(user);
-        springDataUserRepository.save(entity);
+        return springDataUserRepository.save(entity);
     }
 
     @Override
