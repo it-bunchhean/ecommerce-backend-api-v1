@@ -1,14 +1,12 @@
 package com.it_chhean.ecommerce.identity.domain.model;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class Role {
 
     private final Integer id;
     private String name;
 
-    // Private constructor enforcing core domain constraints
     private Role(Integer id, String name) {
         this.id = id;
         this.setName(name);
@@ -17,13 +15,10 @@ public class Role {
     /**
      * Domain Factory Methods
      */
-
-    // Factory method for provisioning a brand-new role
     public static Role create(String name) {
         return new Role(null, name);
     }
 
-    // Factory method used strictly by data mappers when rebuilding state from db
     public static Role reconstitute(Integer id, String name) {
         Objects.requireNonNull(id, "Role ID cannot be null during reconstitute");
         return new Role(id, name);
@@ -32,8 +27,6 @@ public class Role {
     /**
      * Core Domain Logic & Business Rules
      */
-
-    // Safe update with validation rules
     public void rename(String newName) {
         this.setName(newName);
     }
@@ -43,7 +36,6 @@ public class Role {
             throw new IllegalArgumentException("Role name cannot be empty");
         }
 
-        // Validate standard security naming convention requirements
         if (!name.startsWith("ROLE_")) {
             throw new IllegalArgumentException("Role name must begin with 'ROLE_' prefix");
         }

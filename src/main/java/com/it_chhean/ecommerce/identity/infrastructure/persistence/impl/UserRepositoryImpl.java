@@ -1,8 +1,9 @@
-package com.it_chhean.ecommerce.identity.infrastructure.persistence;
+package com.it_chhean.ecommerce.identity.infrastructure.persistence.impl;
 
 import java.util.Optional;
 
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
+import com.it_chhean.ecommerce.identity.infrastructure.persistence.SpringDataUserRepository;
 import org.springframework.stereotype.Repository;
 
 import com.it_chhean.ecommerce.identity.domain.model.User;
@@ -24,7 +25,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public UserResponse save(User user) {
         UserJpaEntity entity = UserJpaEntity.fromDomain(user);
-        return springDataUserRepository.save(entity);
+        UserJpaEntity savedEntity = springDataUserRepository.save(entity);
+        return UserResponse.from(savedEntity.toDomain());
     }
 
     @Override
@@ -36,6 +38,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return springDataUserRepository.findByEmail(email)
-            .map(UserJpaEntity::toDomain);
+                .map(UserJpaEntity::toDomain);
     }
 }

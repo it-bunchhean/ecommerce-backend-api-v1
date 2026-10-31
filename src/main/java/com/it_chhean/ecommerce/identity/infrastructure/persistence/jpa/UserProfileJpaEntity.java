@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "tbl_user_profile")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

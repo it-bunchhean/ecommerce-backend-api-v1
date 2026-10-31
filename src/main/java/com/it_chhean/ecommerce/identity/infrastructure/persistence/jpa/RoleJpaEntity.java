@@ -1,8 +1,6 @@
 package com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
@@ -11,6 +9,7 @@ import lombok.Getter;
 public class RoleJpaEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
 

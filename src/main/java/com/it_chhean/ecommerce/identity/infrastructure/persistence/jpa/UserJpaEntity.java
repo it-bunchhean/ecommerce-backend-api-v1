@@ -7,27 +7,24 @@ import java.util.stream.Collectors;
 
 import com.it_chhean.ecommerce.identity.domain.model.Role;
 import com.it_chhean.ecommerce.identity.domain.model.UserStatus;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "tbl_users")
 @Getter
 @Setter
+@ToString
 public class UserJpaEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "username", length = 250)
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -54,13 +51,14 @@ public class UserJpaEntity {
 
     // required by Jpa spec
     protected UserJpaEntity() {}
-
     
     // Bidirectional Conversion methods
     public static UserJpaEntity fromDomain(com.it_chhean.ecommerce.identity.domain.model.User user) {
         if (user == null) return null;
 
         UserJpaEntity entity = new UserJpaEntity();
+        entity.setId(user.getId());
+        entity.username = user.getUsername();
         entity.email = user.getEmail();
         entity.passwordHash = user.getPasswordHash();
         entity.status = user.getStatus().name();
@@ -77,7 +75,6 @@ public class UserJpaEntity {
         return entity;
     }
 
-
     public com.it_chhean.ecommerce.identity.domain.model.User toDomain() {
         Set<Role> domainRoles = this.roles.stream()
                 .map(RoleJpaEntity::toDomain)
@@ -88,6 +85,7 @@ public class UserJpaEntity {
 
         return com.it_chhean.ecommerce.identity.domain.model.User.reconstitute(
                 this.id,
+                this.username,
                 this.email,
                 this.passwordHash,
                 domainProfile,

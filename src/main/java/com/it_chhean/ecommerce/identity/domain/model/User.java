@@ -23,7 +23,7 @@ public class User {
         this.username = username;
         this.setEmail(email);
         this.passwordHash = Objects.requireNonNull(passwordHash, "Password hash cannot be null");
-        this.profile = profile; // Profile can be null at initial stage if required
+        this.profile = profile; 
         this.status = Objects.requireNonNull(status, "User status cannot be null");
         this.createdAt = Objects.requireNonNull(createdAt, "Creation timestamp cannot be null");
         this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
@@ -34,7 +34,7 @@ public class User {
      */
 
     // Factory method for creating a brand new registration sign-up state
-    public static User register(String username, String email, String passwordHash, UserProfile profile) {
+    public static User register( String username, String email, String passwordHash, UserProfile profile) {
         return new User(
                 null,
                 username,

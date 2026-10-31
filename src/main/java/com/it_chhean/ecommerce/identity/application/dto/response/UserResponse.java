@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public record UserResponse(
-
         Long id,
         String username,
         String email,
