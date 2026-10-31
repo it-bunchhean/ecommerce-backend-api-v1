@@ -3,19 +3,22 @@ package com.it_chhean.ecommerce.identity.application.service.impl;
 import com.it_chhean.ecommerce.common.exception.ResourceNotFoundException;
 import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
-import com.it_chhean.ecommerce.identity.application.service.UserService;
+import com.it_chhean.ecommerce.identity.application.service.AuthService;
 import com.it_chhean.ecommerce.identity.domain.model.User;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
+import com.it_chhean.ecommerce.identity.domain.repository.RoleRepository;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override

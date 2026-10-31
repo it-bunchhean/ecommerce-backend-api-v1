@@ -1,6 +1,5 @@
 package com.it_chhean.ecommerce.identity.infrastructure.persistence.impl;
 
-import com.it_chhean.ecommerce.common.exception.ResourceNotFoundException;
 import com.it_chhean.ecommerce.identity.application.dto.response.RoleResponse;
 import com.it_chhean.ecommerce.identity.domain.model.Role;
 import com.it_chhean.ecommerce.identity.domain.repository.RoleRepository;
@@ -36,5 +35,10 @@ public class RoleRepositoryImpl implements RoleRepository {
     public Optional<Role> findByName(String name) {
         return roleRepository.findByName(name)
                 .map(RoleJpaEntity::toDomain);
+    }
+
+    @Override
+    public boolean isRoleAlreadyInUse(String role) {
+        return roleRepository.existsByName(role);
     }
 }

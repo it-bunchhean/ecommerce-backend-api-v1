@@ -15,7 +15,7 @@ public class User {
     private final UserProfile profile; 
     private UserStatus status;
     private final Instant createdAt;
-    private final Set<Role> roles;
+    private final Set<Role> roles ;
 
     // Private constructor enforcing domain integrity rules
     private User(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
@@ -50,6 +50,7 @@ public class User {
     // Factory method used strictly by data mappers when rebuilding state from the database
     public static User reconstitute(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
         return new User(id, username, email, passwordHash, profile, status, createdAt, roles);
+
     }
 
     /**
@@ -71,6 +72,10 @@ public class User {
             throw new IllegalStateException("User is already suspended");
         }
         this.status = UserStatus.SUSPENDED;
+    }
+
+    public void activate() {
+        this.status = UserStatus.ACTIVE;
     }
 
     public void changeEmail(String newEmail) {

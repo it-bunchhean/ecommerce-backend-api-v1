@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface SpringDataRoleRepository extends CrudRepository<RoleJpaEntity, Integer> {
     Optional<RoleJpaEntity> findByName(String name);
     List<RoleJpaEntity> id(Integer id);
+    boolean existsByName(String roleName);
 }

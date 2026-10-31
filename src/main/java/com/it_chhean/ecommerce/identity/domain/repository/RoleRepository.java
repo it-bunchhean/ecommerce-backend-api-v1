@@ -12,4 +12,5 @@ public interface RoleRepository {
     RoleResponse save(Role role);
     Optional<Role> findById(Integer id);
     Optional<Role> findByName(String name);
+    boolean isRoleAlreadyInUse(String role);
 }
