@@ -7,7 +7,9 @@ import com.it_chhean.ecommerce.identity.application.service.UserService;
 import com.it_chhean.ecommerce.identity.domain.model.User;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;

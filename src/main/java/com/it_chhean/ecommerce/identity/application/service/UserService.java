@@ -2,7 +2,6 @@ package com.it_chhean.ecommerce.identity.application.service;
 
 import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
-import com.it_chhean.ecommerce.identity.domain.model.User;
 
 public interface UserService {
 
