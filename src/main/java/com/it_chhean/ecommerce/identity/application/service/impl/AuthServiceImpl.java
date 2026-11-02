@@ -1,6 +1,8 @@
 package com.it_chhean.ecommerce.identity.application.service.impl;
 
+import com.it_chhean.ecommerce.common.exception.InvalidEmailException;
 import com.it_chhean.ecommerce.common.exception.ResourceNotFoundException;
+import com.it_chhean.ecommerce.identity.application.dto.request.LoginRequest;
 import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 import com.it_chhean.ecommerce.identity.application.service.AuthService;
@@ -49,6 +51,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public UserResponse loginUseCase(LoginRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new InvalidEmailException("Invalid email or password"));
+        return null;
+    }
+
+    @Override
     public void suspendUser(Long id) {
         User user = findUserById(id);
         user.suspend();
@@ -60,6 +69,40 @@ public class AuthServiceImpl implements AuthService {
         User user = findUserById(id);
         user.changeEmail(newEmail);
         userRepository.save(user);
+    }
+
+    @Override
+    public void verificationEmail(Long id, String userEmail) {
+        User user = findUserById(id);
+        user.verifyEmail();
+        userRepository.save(user);
+    }
+
+    @Override
+    public void assignRoleToUser(Long userId, Integer roleId) {
+        User user = findUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
+
+        if ( user.getRoles().contains(role)) {
+            user.getRoles().add(role);
+        } else {
+            throw new RuntimeException("User already has this role assigned.");
+        }
+    }
+
+    @Override
+    public void removeRoleFromUser(Long userId, Integer roleId) {
+        User user = findUserById(userId);
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not fount with id: " + roleId));
+
+        if (user.getRoles().contains(role)) {
+            user.getRoles().remove(role);
+            userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("User does not have this role assigned.");
+        }
     }
 
     private User findUserById(Long id) {
