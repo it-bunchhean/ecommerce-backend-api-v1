@@ -30,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("An account is already registered with this email address.");
         }
 
+        if ()
+
         UserProfile profile = UserProfile.create(
                 request.firstName(),
                 request.lastName(),

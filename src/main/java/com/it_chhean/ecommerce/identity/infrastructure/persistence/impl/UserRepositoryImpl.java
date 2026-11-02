@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 import com.it_chhean.ecommerce.identity.infrastructure.persistence.SpringDataUserRepository;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.stereotype.Repository;
 import com.it_chhean.ecommerce.identity.domain.model.User;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
@@ -17,7 +18,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final SpringDataUserRepository springDataUserRepository;
 
-    public UserRepositoryImpl(SpringDataUserRepository springDataUserRepository) {
+    public UserRepositoryImpl(SpringDataUserRepository springDataUserRepository, EntityManagerFactory entityManagerFactory) {
         this.springDataUserRepository = springDataUserRepository;
     }
 
@@ -38,5 +39,10 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByEmail(String email) {
         return springDataUserRepository.findByEmail(email)
                 .map(UserJpaEntity::toDomain);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return false;
     }
 }
