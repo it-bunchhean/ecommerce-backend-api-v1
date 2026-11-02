@@ -15,7 +15,7 @@ public class User {
     private final UserProfile profile; 
     private UserStatus status;
     private final Instant createdAt;
-    private final Set<Role> roles ;
+    private final Set<Role> roles;
 
     // Private constructor enforcing domain integrity rules
     private User(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
@@ -34,23 +34,28 @@ public class User {
      */
 
     // Factory method for creating a brand new registration sign-up state
-    public static User register( String username, String email, String passwordHash, UserProfile profile) {
+    public static User register( String username, String email, String passwordHash,  Role defaultRole) {
+        if (defaultRole == null) {
+            throw new IllegalArgumentException("A user must be assigned a valid default role.");
+        }
+
+        Set<Role> initialRoles = new HashSet<>();
+        initialRoles.add(defaultRole);
         return new User(
                 null,
                 username,
                 email,
                 passwordHash,
-                profile,
+                null,
                 UserStatus.PENDING_VERIFICATION,
                 Instant.now(),
-                new HashSet<>()
+                initialRoles
         );
     } 
 
     // Factory method used strictly by data mappers when rebuilding state from the database
     public static User reconstitute(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
         return new User(id, username, email, passwordHash, profile, status, createdAt, roles);
-
     }
 
     /**

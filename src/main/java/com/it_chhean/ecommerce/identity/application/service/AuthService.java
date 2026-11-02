@@ -4,9 +4,7 @@ import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 
 public interface AuthService {
-
     UserResponse registerUseCase(RegisterRequest request);
     void suspendUser(Long id);
     void changeUserEmail(Long id, String newEmail);
-
 }

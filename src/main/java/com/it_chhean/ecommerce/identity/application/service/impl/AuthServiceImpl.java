@@ -5,6 +5,7 @@ import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 import com.it_chhean.ecommerce.identity.application.service.AuthService;
 import com.it_chhean.ecommerce.identity.domain.model.User;
+import com.it_chhean.ecommerce.identity.domain.model.Role;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
 import com.it_chhean.ecommerce.identity.domain.repository.RoleRepository;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
@@ -33,12 +34,15 @@ public class AuthServiceImpl implements AuthService {
                 request.phoneNumber()
         );
 
+        Role defaultRole = roleRepository.findByName("ROLE_USER") 
+               .orElseThrow(() -> new IllegalStateException("System configuration error: Default role not found."));
+
         String hardCodeHash = request.passwordHash();
         User newUser = User.register(
                 request.username(),
                 request.email(),
                 hardCodeHash,
-                profile
+                defaultRole
         );
 
         return userRepository.save(newUser);

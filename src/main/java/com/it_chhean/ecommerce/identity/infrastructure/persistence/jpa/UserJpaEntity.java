@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.it_chhean.ecommerce.identity.domain.model.Role;
-import com.it_chhean.ecommerce.identity.domain.model.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +39,7 @@ public class UserJpaEntity {
     @Column(name = "create_at")
     private Instant createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
@@ -53,30 +51,31 @@ public class UserJpaEntity {
     protected UserJpaEntity() {}
     
     // Bidirectional Conversion methods
-    public static UserJpaEntity fromDomain(com.it_chhean.ecommerce.identity.domain.model.User user) {
-        if (user == null) return null;
+    public static UserJpaEntity fromDomain(com.it_chhean.ecommerce.identity.domain.model.User domainUser) {
+        if (domainUser == null) return null;
 
         UserJpaEntity entity = new UserJpaEntity();
-        entity.setId(user.getId());
-        entity.username = user.getUsername();
-        entity.email = user.getEmail();
-        entity.passwordHash = user.getPasswordHash();
-        entity.status = user.getStatus().name();
-        entity.createdAt = user.getCreatedAt();
+        entity.setId(domainUser.getId());
+        entity.username = domainUser.getUsername();
+        entity.email = domainUser.getEmail();
+        entity.passwordHash = domainUser.getPasswordHash();
+        entity.status = domainUser.getStatus().name();
+        entity.createdAt = domainUser.getCreatedAt();
 
-        if (user.getProfile() != null) {
-            entity.setProfile(UserProfileJpaEntity.fromDomain(user.getProfile()));
+        entity.profile = domainUser.getProfile() != null 
+            ? UserProfileJpaEntity.fromDomain(domainUser.getProfile()) : null;
+
+        if (domainUser.getRoles() != null) {
+            entity.roles = domainUser.getRoles().stream()
+                .map(RoleJpaEntity::fromDomain)
+                .collect(Collectors.toSet());
         }
-
-        entity.roles = user.getRoles().stream()
-            .map(RoleJpaEntity::fromDomain)
-            .collect(Collectors.toSet());
 
         return entity;
     }
 
     public com.it_chhean.ecommerce.identity.domain.model.User toDomain() {
-        Set<Role> domainRoles = this.roles.stream()
+        Set domainRoles = this.roles.stream()
                 .map(RoleJpaEntity::toDomain)
                 .collect(Collectors.toSet());
 
@@ -89,7 +88,7 @@ public class UserJpaEntity {
                 this.email,
                 this.passwordHash,
                 domainProfile,
-                UserStatus.valueOf(this.status),
+                com.it_chhean.ecommerce.identity.domain.model.UserStatus.valueOf(this.status),
                 this.createdAt,
                 domainRoles
         );
