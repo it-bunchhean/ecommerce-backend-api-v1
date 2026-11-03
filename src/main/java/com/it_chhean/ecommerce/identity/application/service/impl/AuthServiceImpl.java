@@ -11,7 +11,10 @@ import com.it_chhean.ecommerce.identity.domain.model.Role;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
 import com.it_chhean.ecommerce.identity.domain.repository.RoleRepository;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
+import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -76,6 +79,22 @@ public class AuthServiceImpl implements AuthService {
         User user = findUserById(id);
         user.verifyEmail();
         userRepository.save(user);
+    }
+
+    @Override
+    public UserResponse findById(Long id) {
+        User user = findUserById(id);
+        return UserResponse.from(user);
+    }
+
+    @Override
+    public List<UserResponse> findAllUsers() {
+        return null;
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+
     }
 
     private User findUserById(Long id) {

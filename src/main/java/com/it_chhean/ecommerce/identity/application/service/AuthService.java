@@ -4,10 +4,17 @@ import com.it_chhean.ecommerce.identity.application.dto.request.LoginRequest;
 import com.it_chhean.ecommerce.identity.application.dto.request.RegisterRequest;
 import com.it_chhean.ecommerce.identity.application.dto.response.UserResponse;
 
+import java.util.List;
+
 public interface AuthService {
     UserResponse registerUseCase(RegisterRequest request);
     UserResponse loginUseCase(LoginRequest request);
+
     void suspendUser(Long id);
     void changeUserEmail(Long id, String newEmail);
     void verificationEmail(Long id, String userEmail);
+
+    UserResponse findById(Long id);
+    List<UserResponse> findAllUsers();
+    void deleteUser(Long id);
 }
