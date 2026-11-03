@@ -17,7 +17,8 @@ springdoc:
 spring:
   application:
     name: backend_ecommerce
-
+  profile:
+    activate: ${SPRING_PROFILES_ACTIVE}
   config:
     import:
       - optional:file:.env[.yml]
