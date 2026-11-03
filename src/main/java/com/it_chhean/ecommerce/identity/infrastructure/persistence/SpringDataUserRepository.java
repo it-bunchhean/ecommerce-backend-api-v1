@@ -13,4 +13,3 @@ public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, L
     Optional<UserJpaEntity> findByEmail(String email);
     List<UserJpaEntity> id(Long id);
 }
-
