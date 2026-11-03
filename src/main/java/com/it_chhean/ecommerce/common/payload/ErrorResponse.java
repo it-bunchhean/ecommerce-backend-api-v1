@@ -4,47 +4,29 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ErrorResponse(
+        LocalDateTime timestamp,
         int status,
         String error,
         String message,
-        String path,
-        String timestamp,
-        List<String> details 
+        String path
 ) {
     public static ErrorResponse of(
             HttpStatus status,
-            String error,
             String message,
             String path
     ) {
         return new ErrorResponse(
+                LocalDateTime.now(),
                 status.value(),
-                status.getReasonPhrase(),
+                status.name(),
                 message,
-                path,
-                Instant.now().toString(),
-                null
-        );
-    }
-    public static ErrorResponse of(
-            HttpStatus status, 
-            String error, 
-            String message,
-            String path,
-            List<String> details
-    ){
-        return new ErrorResponse(
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                path,
-                Instant.now().toString(),
-                details
+                path
         );
     }
 }
