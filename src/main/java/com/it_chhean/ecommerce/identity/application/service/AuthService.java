@@ -13,6 +13,4 @@ public interface AuthService {
     void suspendUser(Long id);
     void changeUserEmail(Long id, String newEmail);
     void verificationEmail(Long id, String userEmail);
-    void assignRoleToUser(Long userId, Integer roleId);
-    void removeRoleFromUser(Long userId, Integer roleId);
 }

@@ -7,38 +7,58 @@ import com.it_chhean.ecommerce.identity.infrastructure.persistence.SpringDataRol
 import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.RoleJpaEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class RoleRepositoryImpl implements RoleRepository {
 
-    private final SpringDataRoleRepository roleRepository;
+    private final SpringDataRoleRepository springDataRoleRepository;
 
-    public RoleRepositoryImpl(SpringDataRoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleRepositoryImpl(SpringDataRoleRepository springDataRoleRepository) {
+        this.springDataRoleRepository = springDataRoleRepository;
     }
 
     @Override
     public RoleResponse save(Role role) {
         RoleJpaEntity entity = RoleJpaEntity.fromDomain(role);
-        RoleJpaEntity savedEntity = roleRepository.save(entity);
+        RoleJpaEntity savedEntity = springDataRoleRepository.save(entity);
         return RoleResponse.from(savedEntity.toDomain());
     }
 
     @Override
     public Optional<Role> findById(Integer id) {
-        return roleRepository.findById(id)
+        return springDataRoleRepository.findById(id)
                 .map(RoleJpaEntity::toDomain);
     }
 
     @Override
     public Optional<Role> findByName(String name) {
-        return roleRepository.findByName(name)
+        return springDataRoleRepository.findByName(name)
                 .map(RoleJpaEntity::toDomain);
     }
 
     @Override
     public boolean isRoleAlreadyInUse(String role) {
-        return roleRepository.existsByName(role);
+        return springDataRoleRepository.existsByName(role);
+    }
+
+    @Override
+    public List<Role> findAll() {
+        List<RoleJpaEntity> entities = springDataRoleRepository.findAll();
+        return entities.stream()
+                .map(entity -> new Role(entity.getId(), entity.getName()))
+                .toList();
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return springDataRoleRepository.existsById(id);
+    }
+
+    @Override
+    public void delateById(Integer id) {
+        springDataRoleRepository.deleteById(id);
     }
 }

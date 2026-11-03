@@ -30,8 +30,6 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("An account is already registered with this email address.");
         }
 
-        if ()
-
         UserProfile profile = UserProfile.create(
                 request.firstName(),
                 request.lastName(),
@@ -78,33 +76,6 @@ public class AuthServiceImpl implements AuthService {
         User user = findUserById(id);
         user.verifyEmail();
         userRepository.save(user);
-    }
-
-    @Override
-    public void assignRoleToUser(Long userId, Integer roleId) {
-        User user = findUserById(userId);
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + roleId));
-
-        if ( user.getRoles().contains(role)) {
-            user.getRoles().add(role);
-        } else {
-            throw new RuntimeException("User already has this role assigned.");
-        }
-    }
-
-    @Override
-    public void removeRoleFromUser(Long userId, Integer roleId) {
-        User user = findUserById(userId);
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not fount with id: " + roleId));
-
-        if (user.getRoles().contains(role)) {
-            user.getRoles().remove(role);
-            userRepository.save(user);
-        } else {
-            throw new ResourceNotFoundException("User does not have this role assigned.");
-        }
     }
 
     private User findUserById(Long id) {

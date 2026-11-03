@@ -1,21 +1,24 @@
 package com.it_chhean.ecommerce.identity.domain.model;
 
+import lombok.Getter;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
 public class User {
 
     private Long id;
     private String username;
     private String email;
-    private final String passwordHash;  
-    private final UserProfile profile; 
+    private String passwordHash;
+    private UserProfile profile;
     private UserStatus status;
     private final Instant createdAt;
-    private final Set<Role> roles;
+    private Set<Role> roles;
 
     // Private constructor enforcing domain integrity rules
     private User(Long id, String username, String email, String passwordHash, UserProfile profile, UserStatus status, Instant createdAt, Set<Role> roles) {
@@ -111,14 +114,6 @@ public class User {
         Objects.requireNonNull(role, "Role cannot be null");
         this.roles.remove(role);
     }
-
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getUsername() { return username; }
-    public String getPasswordHash() { return passwordHash; }
-    public UserProfile getProfile() { return profile; }
-    public UserStatus getStatus() { return status; }
-    public Instant getCreatedAt() { return createdAt; }
 
     /**
      * Identity Equality Protocols
