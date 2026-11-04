@@ -1,6 +1,5 @@
 package com.it_chhean.ecommerce.identity.infrastructure.security.config;
 
-
 import org.springframework.stereotype.Component;
 
 @Component
