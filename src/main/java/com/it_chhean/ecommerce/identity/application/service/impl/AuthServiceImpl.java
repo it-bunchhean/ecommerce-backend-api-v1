@@ -11,7 +11,6 @@ import com.it_chhean.ecommerce.identity.domain.model.Role;
 import com.it_chhean.ecommerce.identity.domain.model.UserProfile;
 import com.it_chhean.ecommerce.identity.domain.repository.RoleRepository;
 import com.it_chhean.ecommerce.identity.domain.repository.UserRepository;
-import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
