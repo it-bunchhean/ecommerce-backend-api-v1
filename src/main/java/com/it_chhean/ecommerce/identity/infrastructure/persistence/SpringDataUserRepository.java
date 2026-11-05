@@ -11,5 +11,6 @@ import com.it_chhean.ecommerce.identity.infrastructure.persistence.jpa.UserJpaEn
  */
 public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, Long> {
     Optional<UserJpaEntity> findByEmail(String email);
+    Optional<UserJpaEntity> findByUsername(String username);
     List<UserJpaEntity> id(Long id);
 }

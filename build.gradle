@@ -20,7 +20,7 @@ repositories {
 
 ext {
     mapstructVersion = "1.6.3"
-    lombokMapstructBindingVersion = "0.2.0" // Added binding version
+    lombokMapstructBindingVersion = "0.2.0"
 }
 
 dependencies {
